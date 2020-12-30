@@ -138,10 +138,11 @@ class PolyLine(HashedList):
         """
         length = self.get_length()
         ik = 0
+        ik_max = len(self.data)-1
         distance = length/(num_points-1)
         data = [self[0]]
         for i in range(1, num_points):
-            ik = self.walk(ik, distance)
+            ik = min(self.walk(ik, distance), ik_max)
             data.append(self[ik])
 
         return self.__class__(data)
