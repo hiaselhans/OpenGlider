@@ -174,6 +174,19 @@ namespace openglider::euklid {
             .def("mirror", &PolyLine2D::mirror)
             .def("cut", py::overload_cast<Vector2D&, Vector2D&>(&PolyLine2D::cut))
             .def("cut", py::overload_cast<Vector2D&, Vector2D&, const double>(&PolyLine2D::cut))
+
+            .def("cut_async", [](const PolyLine2D &v, float scale){
+                auto long_running_function = [](std::shared_ptr<py::object>& future) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+                    future.set_result();
+                }
+                auto py_async = py::module::import("asyncio");
+                auto py_future = std::make_shared<py::object>(py_async.attr("Future")());
+                auto future = std::async(std::launch::async, thread_func);
+
+                return future
+
+            })
             .def("fix_errors", &PolyLine2D::fix_errors);
     };
 }
